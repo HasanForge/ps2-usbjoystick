@@ -1,0 +1,26 @@
+name: Build joy2key
+
+on:
+  push:
+    paths:
+      - 'joy2key.c'
+      - '.github/workflows/build-joy2key.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install 32-bit MinGW toolchain
+        run: sudo apt-get update && sudo apt-get install -y gcc-mingw-w64-i686
+
+      - name: Build joy2key.exe (32-bit, statically linked)
+        run: i686-w64-mingw32-gcc joy2key.c -o joy2key.exe -lwinmm -static
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: joy2key-win32
+          path: joy2key.exe
